@@ -16,6 +16,8 @@
 
 #pragma once
 
+#define BOTH_SHIFTS_TURNS_ON_CAPS_WORD
+#define UNICODE_SELECTED_MODES UNICODE_MODE_LINUX
 // Not yet available in `info.json`
 #ifdef OLED_ENABLE
 #   define OLED_FONT_H "keyboards/splitkb/aurora/lily58/glcdfont.c"
