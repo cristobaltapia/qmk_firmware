@@ -26,23 +26,23 @@
 #define MODS_GUI    (MOD_BIT(KC_LGUI)|MOD_BIT(KC_RGUI))
 
 enum custom_keycodes {
-  PLACEHOLDER = SAFE_RANGE,     // can always be here
-  NMOD3,
-  NEO2_RMOD3,
-  NEO2_1,
-  NEO2_2,
-  NEO2_3,
-  NEO2_4,
-  NEO2_5,
-  NEO2_6,
-  NEO2_7,
-  NEO2_8,
-  NEO2_9,
-  NEO2_0,
-  NEO2_MINUS,
-  NEO2_COMMA,
-  NEO2_DOT,
-  NEO2_SHARP_S,
+    PLACEHOLDER = SAFE_RANGE,     // can always be here
+    NMOD3,
+    NEO2_RMOD3,
+    NEO2_1,
+    NEO2_2,
+    NEO2_3,
+    NEO2_4,
+    NEO2_5,
+    NEO2_6,
+    NEO2_7,
+    NEO2_8,
+    NEO2_9,
+    NEO2_0,
+    NEO2_MINUS,
+    NEO2_COMMA,
+    NEO2_DOT,
+    NEO2_SHARP_S,
 };
 
 // NEO_3 special characters
@@ -109,14 +109,16 @@ enum custom_keycodes {
 #define N4_DOLLAR               DE_DLR                      // $
 #define N4_EN_DASH              RALT(DE_MINS)               // –
 #define N4_EM_DASH              RSA(DE_MINS)                // —
-                                                            //
+//
 enum unicode_names {
     G_ALPHA,
+    S_n,
     S_N
 };
 
 const uint32_t PROGMEM unicode_map[] = {
     [G_ALPHA] = 0x03B1, // Unicode for α (Greek Alpha)
+    [S_n] = 0x00F1, // Unicode for α
     [S_N] = 0x00D1, // Unicode for α
     // Assign more Unicode characters as needed
 };
@@ -134,17 +136,17 @@ static uint8_t capslock_state = 0;
 
 // Define layers
 enum layer_number {
-  _NOTED = 0,
-  _NEO_3,
-  _NEO_4,
-  _NEO_5,
-  _NEO_6,
-  _FN_KEYS,
-  _QWRTY,
+    _NOTED = 0,
+    _NEO_3,
+    _NEO_4,
+    _NEO_5,
+    _NEO_6,
+    _FN_KEYS,
+    _QWRTY,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-
+// *INDENT-OFF*
 /* Noted
  * Small difference with the normal NEO is that I am using the function keys instead of the numbers on the
  * upper most row.
@@ -187,7 +189,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______,     N3_SUP1,    DE_SUP2, DE_SUP3, N3_RSAQUO, N3_LSAQUO,                     N3_CENT,  N3_YEN, N3_SBQUO,  N3_LSQ,  N3_RSQ, _______,
   _______, N3_ELLIPSIS, N3_UNDRSCR, DE_LBRC,   DE_RBRC,   DE_CIRC,                     DE_EXLM, DE_LABK,  DE_RABK,  DE_EQL, DE_AMPR,   DE_AT,
   _______,   N3_BSLASH,   N3_SLASH, DE_LCBR,   DE_RCBR,   DE_ASTR,                     DE_QUES, DE_LPRN,  DE_RPRN, DE_MINS, DE_COLN, _______,
-  _______,     DE_HASH,     DE_DLR, DE_PIPE,   DE_TILD,    DE_GRV,  KC_INS,   UM(S_N), DE_PLUS, DE_PERC,  DE_DQUO, DE_QUOT, DE_SCLN, _______,
+  _______,     DE_HASH,     DE_DLR, DE_PIPE,   DE_TILD,    DE_GRV,  KC_INS,   UP(S_n, S_N), DE_PLUS, DE_PERC,  DE_DQUO, DE_QUOT, DE_SCLN, _______,
                                         _______, _______, _______, _______,   _______, _______, _______, _______
 ),
 /* NEO 4 (or something similar)
@@ -257,6 +259,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 };
 
+// *INDENT-ON*
 #if defined(ENCODER_ENABLE) && defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 
@@ -265,194 +268,194 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 
 // Send a key tap with a optional set of modifiers.
 void tap_with_modifiers(uint16_t keycode, uint8_t force_modifiers) {
-  uint8_t active_modifiers = get_mods();
+    uint8_t active_modifiers = get_mods();
 
-  if ((force_modifiers & MODS_SHIFT) && !(active_modifiers & MODS_SHIFT)) register_code(KC_LSFT);
-  if ((force_modifiers & MODS_CTRL) && !(active_modifiers & MODS_CTRL)) register_code(KC_LCTL);
-  if ((force_modifiers & MODS_ALT) && !(active_modifiers & MODS_ALT)) register_code(KC_LALT);
-  if ((force_modifiers & MODS_GUI) && !(active_modifiers & MODS_GUI)) register_code(KC_LGUI);
+    if ((force_modifiers & MODS_SHIFT) && !(active_modifiers & MODS_SHIFT)) register_code(KC_LSFT);
+    if ((force_modifiers & MODS_CTRL) && !(active_modifiers & MODS_CTRL)) register_code(KC_LCTL);
+    if ((force_modifiers & MODS_ALT) && !(active_modifiers & MODS_ALT)) register_code(KC_LALT);
+    if ((force_modifiers & MODS_GUI) && !(active_modifiers & MODS_GUI)) register_code(KC_LGUI);
 
-  register_code(keycode);
-  unregister_code(keycode);
+    register_code(keycode);
+    unregister_code(keycode);
 
-  if ((force_modifiers & MODS_SHIFT) && !(active_modifiers & MODS_SHIFT)) unregister_code(KC_LSFT);
-  if ((force_modifiers & MODS_CTRL) && !(active_modifiers & MODS_CTRL)) unregister_code(KC_LCTL);
-  if ((force_modifiers & MODS_ALT) && !(active_modifiers & MODS_ALT)) unregister_code(KC_LALT);
-  if ((force_modifiers & MODS_GUI) && !(active_modifiers & MODS_GUI)) unregister_code(KC_LGUI);
+    if ((force_modifiers & MODS_SHIFT) && !(active_modifiers & MODS_SHIFT)) unregister_code(KC_LSFT);
+    if ((force_modifiers & MODS_CTRL) && !(active_modifiers & MODS_CTRL)) unregister_code(KC_LCTL);
+    if ((force_modifiers & MODS_ALT) && !(active_modifiers & MODS_ALT)) unregister_code(KC_LALT);
+    if ((force_modifiers & MODS_GUI) && !(active_modifiers & MODS_GUI)) unregister_code(KC_LGUI);
 }
 
 // Special remapping for keys with different keycodes/macros when used with shift modifiers.
 bool process_record_user_shifted(uint16_t keycode, keyrecord_t *record) {
-  uint8_t active_modifiers = get_mods();
-  uint8_t shifted = active_modifiers & MODS_SHIFT;
+    uint8_t active_modifiers = get_mods();
+    uint8_t shifted = active_modifiers & MODS_SHIFT;
 
-  // Early return on key release
-  if(!record->event.pressed) {
-    return true;
-  }
+    // Early return on key release
+    if(!record->event.pressed) {
+        return true;
+    }
 
-  if(shifted) {
-    clear_mods();
+    if(shifted) {
+        clear_mods();
 
-    // The sent keys here are all based on US layout. I.e. look up how to
-    // produce the key you want using the german qwertz, then look in
-    // keymap_german what you need to send to get that.
-    switch(keycode) {
-      case NEO2_1:
-        // degree symbol
-        SEND_STRING(SS_LSFT("`"));
-        break;
-      case NEO2_2:
-        // section symbol
-        SEND_STRING(SS_LSFT("3"));
-        break;
-      case NEO2_3:
-        // ℓ
-        SEND_STRING(SS_RALT("1"));
-        break;
-      case NEO2_4:
-        // right angled quote
-        SEND_STRING(SS_RALT("z"));
-        break;
-      case NEO2_5:
-        // left angled quote
-        SEND_STRING(SS_RALT("x"));
-        break;
-      case NEO2_6:
-        // dollar sign
-        SEND_STRING(SS_LSFT("4"));
-        break;
-      case NEO2_7:
-        // euro sign
-        SEND_STRING(SS_RALT("e"));
-        break;
-      case NEO2_8:
-        // low9 double quote
-        SEND_STRING(SS_RALT("v"));
-        break;
-      case NEO2_9:
-        // left double quote
-        SEND_STRING(SS_RALT("b"));
-        break;
-      case NEO2_0:
-        // right double quote
-        SEND_STRING(SS_RALT("n"));
-        break;
-      case NEO2_MINUS:
-        // em dash
-        SEND_STRING(SS_LSFT(SS_RALT("/")));
-        break;
-      case NEO2_COMMA:
-        // en dash
-        SEND_STRING(SS_RALT("/"));
-        break;
-      case NEO2_DOT:
-        // bullet
-        SEND_STRING(SS_RALT(","));
-        break;
-      case NEO2_SHARP_S:
-        // ẞ
-        SEND_STRING(SS_LSFT(SS_RALT("s")));
-        break;
-      default:
+        // The sent keys here are all based on US layout. I.e. look up how to
+        // produce the key you want using the german qwertz, then look in
+        // keymap_german what you need to send to get that.
+        switch(keycode) {
+        case NEO2_1:
+            // degree symbol
+            SEND_STRING(SS_LSFT("`"));
+            break;
+        case NEO2_2:
+            // section symbol
+            SEND_STRING(SS_LSFT("3"));
+            break;
+        case NEO2_3:
+            // ℓ
+            SEND_STRING(SS_RALT("1"));
+            break;
+        case NEO2_4:
+            // right angled quote
+            SEND_STRING(SS_RALT("z"));
+            break;
+        case NEO2_5:
+            // left angled quote
+            SEND_STRING(SS_RALT("x"));
+            break;
+        case NEO2_6:
+            // dollar sign
+            SEND_STRING(SS_LSFT("4"));
+            break;
+        case NEO2_7:
+            // euro sign
+            SEND_STRING(SS_RALT("e"));
+            break;
+        case NEO2_8:
+            // low9 double quote
+            SEND_STRING(SS_RALT("v"));
+            break;
+        case NEO2_9:
+            // left double quote
+            SEND_STRING(SS_RALT("b"));
+            break;
+        case NEO2_0:
+            // right double quote
+            SEND_STRING(SS_RALT("n"));
+            break;
+        case NEO2_MINUS:
+            // em dash
+            SEND_STRING(SS_LSFT(SS_RALT("/")));
+            break;
+        case NEO2_COMMA:
+            // en dash
+            SEND_STRING(SS_RALT("/"));
+            break;
+        case NEO2_DOT:
+            // bullet
+            SEND_STRING(SS_RALT(","));
+            break;
+        case NEO2_SHARP_S:
+            // ẞ
+            SEND_STRING(SS_LSFT(SS_RALT("s")));
+            break;
+        default:
+            set_mods(active_modifiers);
+            return true;
+        }
+
         set_mods(active_modifiers);
-        return true;
-    }
+        return false;
+    } else {
+        switch(keycode) {
+        case NEO2_1:
+            // SEND_STRING(SS_TAP(X_1));
+            SEND_STRING(SS_TAP(X_F1));
+            break;
+        case NEO2_2:
+            SEND_STRING(SS_TAP(X_F2));
+            break;
+        case NEO2_3:
+            SEND_STRING(SS_TAP(X_F3));
+            break;
+        case NEO2_4:
+            SEND_STRING(SS_TAP(X_F4));
+            break;
+        case NEO2_5:
+            SEND_STRING(SS_TAP(X_F5));
+            break;
+        case NEO2_6:
+            SEND_STRING(SS_TAP(X_F6));
+            break;
+        case NEO2_7:
+            SEND_STRING(SS_TAP(X_F7));
+            break;
+        case NEO2_8:
+            SEND_STRING(SS_TAP(X_F8));
+            break;
+        case NEO2_9:
+            SEND_STRING(SS_TAP(X_F9));
+            break;
+        case NEO2_0:
+            SEND_STRING(SS_TAP(X_F10));
+            break;
+        case NEO2_MINUS:
+            SEND_STRING(SS_TAP(X_SLASH));
+            break;
+        case NEO2_COMMA:
+            SEND_STRING(SS_TAP(X_COMMA));
+            break;
+        case NEO2_DOT:
+            SEND_STRING(SS_TAP(X_DOT));
+            break;
+        case NEO2_SHARP_S:
+            // ß
+            SEND_STRING(SS_TAP(X_MINS));
+            break;
+        case N3_CIRCUMFLEX:
+            SEND_STRING(SS_TAP(X_GRAVE) SS_TAP(X_SPACE));
+            break;
+        case N3_BACKTICK:
+            SEND_STRING(SS_LSFT("=") SS_TAP(X_SPACE));
+            break;
+        default:
+            return true;
+        }
 
-    set_mods(active_modifiers);
-    return false;
-  } else {
-    switch(keycode) {
-      case NEO2_1:
-        // SEND_STRING(SS_TAP(X_1));
-        SEND_STRING(SS_TAP(X_F1));
-        break;
-      case NEO2_2:
-        SEND_STRING(SS_TAP(X_F2));
-        break;
-      case NEO2_3:
-        SEND_STRING(SS_TAP(X_F3));
-        break;
-      case NEO2_4:
-        SEND_STRING(SS_TAP(X_F4));
-        break;
-      case NEO2_5:
-        SEND_STRING(SS_TAP(X_F5));
-        break;
-      case NEO2_6:
-        SEND_STRING(SS_TAP(X_F6));
-        break;
-      case NEO2_7:
-        SEND_STRING(SS_TAP(X_F7));
-        break;
-      case NEO2_8:
-        SEND_STRING(SS_TAP(X_F8));
-        break;
-      case NEO2_9:
-        SEND_STRING(SS_TAP(X_F9));
-        break;
-      case NEO2_0:
-        SEND_STRING(SS_TAP(X_F10));
-        break;
-      case NEO2_MINUS:
-        SEND_STRING(SS_TAP(X_SLASH));
-        break;
-      case NEO2_COMMA:
-        SEND_STRING(SS_TAP(X_COMMA));
-        break;
-      case NEO2_DOT:
-        SEND_STRING(SS_TAP(X_DOT));
-        break;
-      case NEO2_SHARP_S:
-        // ß
-        SEND_STRING(SS_TAP(X_MINS));
-        break;
-      case N3_CIRCUMFLEX:
-        SEND_STRING(SS_TAP(X_GRAVE) SS_TAP(X_SPACE));
-        break;
-      case N3_BACKTICK:
-        SEND_STRING(SS_LSFT("=") SS_TAP(X_SPACE));
-        break;
-      default:
-        return true;
+        return false;
     }
-
-    return false;
-  }
 }
 
 // Runs for each key down or up event.
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch(keycode) {
+    switch(keycode) {
     case KC_LSFT:
-      if (record->event.pressed) {
-        capslock_state |= (MOD_BIT(KC_LSFT));
-      } else {
-        capslock_state &= ~(MOD_BIT(KC_LSFT));
-      }
-      break;
-    case KC_RSFT:
-      if (record->event.pressed) {
-        capslock_state |= MOD_BIT(KC_RSFT);
-      } else {
-        capslock_state &= ~(MOD_BIT(KC_RSFT));
-      }
-      break;
-    case NMOD3:
-      if (record->event.pressed) {
-        layer_on(_NEO_3);
-        neo3_state |= (1 << 1);
-      } else {
-        // Turn off _NEO_3 layer unless it's enabled through NEO2_RMOD3 as well.
-        if ((neo3_state & ~(1 << 1)) == 0) {
-          layer_off(_NEO_3);
+        if (record->event.pressed) {
+            capslock_state |= (MOD_BIT(KC_LSFT));
+        } else {
+            capslock_state &= ~(MOD_BIT(KC_LSFT));
         }
-        neo3_state &= ~(1 << 1);
-      }
-      break;
-  }
+        break;
+    case KC_RSFT:
+        if (record->event.pressed) {
+            capslock_state |= MOD_BIT(KC_RSFT);
+        } else {
+            capslock_state &= ~(MOD_BIT(KC_RSFT));
+        }
+        break;
+    case NMOD3:
+        if (record->event.pressed) {
+            layer_on(_NEO_3);
+            neo3_state |= (1 << 1);
+        } else {
+            // Turn off _NEO_3 layer unless it's enabled through NEO2_RMOD3 as well.
+            if ((neo3_state & ~(1 << 1)) == 0) {
+                layer_off(_NEO_3);
+            }
+            neo3_state &= ~(1 << 1);
+        }
+        break;
+    }
 
-  return process_record_user_shifted(keycode, record);
+    return process_record_user_shifted(keycode, record);
 };
 
 
@@ -463,51 +466,51 @@ void matrix_init_user(void) {
 
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
-        // Keycodes that continue Caps Word, with shift applied.
-        case DE_A:
-        case DE_B:
-        case DE_C:
-        case DE_D:
-        case DE_E:
-        case DE_F:
-        case DE_G:
-        case DE_H:
-        case DE_I:
-        case DE_J:
-        case DE_K:
-        case DE_L:
-        case DE_M:
-        case DE_N:
-        case DE_O:
-        case DE_P:
-        case DE_Q:
-        case DE_R:
-        case DE_S:
-        case DE_T:
-        case DE_U:
-        case DE_V:
-        case DE_W:
-        case DE_X:
-        case DE_Y:
-        case DE_Z:
-        case DE_ODIA:
-        case DE_UDIA:
-        case DE_ADIA:
-        case N3_UNDRSCR:
-        case KC_MINS:
-            add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
-            return true;
+    // Keycodes that continue Caps Word, with shift applied.
+    case DE_A:
+    case DE_B:
+    case DE_C:
+    case DE_D:
+    case DE_E:
+    case DE_F:
+    case DE_G:
+    case DE_H:
+    case DE_I:
+    case DE_J:
+    case DE_K:
+    case DE_L:
+    case DE_M:
+    case DE_N:
+    case DE_O:
+    case DE_P:
+    case DE_Q:
+    case DE_R:
+    case DE_S:
+    case DE_T:
+    case DE_U:
+    case DE_V:
+    case DE_W:
+    case DE_X:
+    case DE_Y:
+    case DE_Z:
+    case DE_ODIA:
+    case DE_UDIA:
+    case DE_ADIA:
+    case N3_UNDRSCR:
+    case KC_MINS:
+        add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
+        return true;
 
-        // Keycodes that continue Caps Word, without shifting.
-        case KC_1 ... KC_0:
-        case KC_BSPC:
-        case NEO2_RMOD3:
-        case NMOD3:
-        case KC_DEL:
-        case KC_UNDS:
-            return true;
+    // Keycodes that continue Caps Word, without shifting.
+    case KC_1 ... KC_0:
+    case KC_BSPC:
+    case NEO2_RMOD3:
+    case NMOD3:
+    case KC_DEL:
+    case KC_UNDS:
+        return true;
 
-        default:
-            return false;  // Deactivate Caps Word.
+    default:
+        return false;  // Deactivate Caps Word.
     }
 }
