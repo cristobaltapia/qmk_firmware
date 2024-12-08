@@ -113,13 +113,15 @@ enum custom_keycodes {
 enum unicode_names {
     G_ALPHA,
     S_n,
-    S_N
+    S_N,
+    SCRIPT_L,  // Add this
 };
 
 const uint32_t PROGMEM unicode_map[] = {
     [G_ALPHA] = 0x03B1, // Unicode for α (Greek Alpha)
     [S_n] = 0x00F1, // Unicode for α
     [S_N] = 0x00D1, // Unicode for α
+    [SCRIPT_L] = 0x2113,  // Unicode for ℓ
     // Assign more Unicode characters as needed
 };
 
@@ -270,18 +272,31 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 void tap_with_modifiers(uint16_t keycode, uint8_t force_modifiers) {
     uint8_t active_modifiers = get_mods();
 
-    if ((force_modifiers & MODS_SHIFT) && !(active_modifiers & MODS_SHIFT)) register_code(KC_LSFT);
-    if ((force_modifiers & MODS_CTRL) && !(active_modifiers & MODS_CTRL)) register_code(KC_LCTL);
-    if ((force_modifiers & MODS_ALT) && !(active_modifiers & MODS_ALT)) register_code(KC_LALT);
-    if ((force_modifiers & MODS_GUI) && !(active_modifiers & MODS_GUI)) register_code(KC_LGUI);
+    // Clear all mods temporarily
+    clear_mods();
 
+    // Apply forced modifiers
+    if (force_modifiers & MODS_SHIFT) register_code(KC_LSFT);
+    if (force_modifiers & MODS_CTRL) register_code(KC_LCTL);
+    if (force_modifiers & MODS_ALT) register_code(KC_RALT);  // Changed from KC_LALT to KC_RALT
+    if (force_modifiers & MODS_GUI) register_code(KC_LGUI);
+
+    // Small delay to ensure modifiers are registered
+    wait_ms(10);
+
+    // Send the keycode
     register_code(keycode);
+    wait_ms(10);  // Small delay before release
     unregister_code(keycode);
 
-    if ((force_modifiers & MODS_SHIFT) && !(active_modifiers & MODS_SHIFT)) unregister_code(KC_LSFT);
-    if ((force_modifiers & MODS_CTRL) && !(active_modifiers & MODS_CTRL)) unregister_code(KC_LCTL);
-    if ((force_modifiers & MODS_ALT) && !(active_modifiers & MODS_ALT)) unregister_code(KC_LALT);
-    if ((force_modifiers & MODS_GUI) && !(active_modifiers & MODS_GUI)) unregister_code(KC_LGUI);
+    // Remove forced modifiers
+    if (force_modifiers & MODS_SHIFT) unregister_code(KC_LSFT);
+    if (force_modifiers & MODS_CTRL) unregister_code(KC_LCTL);
+    if (force_modifiers & MODS_ALT) unregister_code(KC_RALT);  // Changed from KC_LALT to KC_RALT
+    if (force_modifiers & MODS_GUI) unregister_code(KC_LGUI);
+
+    // Restore original modifiers
+    set_mods(active_modifiers);
 }
 
 // Special remapping for keys with different keycodes/macros when used with shift modifiers.
@@ -297,65 +312,62 @@ bool process_record_user_shifted(uint16_t keycode, keyrecord_t *record) {
     if(shifted) {
         clear_mods();
 
-        // The sent keys here are all based on US layout. I.e. look up how to
-        // produce the key you want using the german qwertz, then look in
-        // keymap_german what you need to send to get that.
         switch(keycode) {
         case NEO2_1:
             // degree symbol
-            SEND_STRING(SS_LSFT("`"));
+            tap_with_modifiers(KC_GRV, MODS_SHIFT);
             break;
         case NEO2_2:
             // section symbol
-            SEND_STRING(SS_LSFT("3"));
+            tap_with_modifiers(KC_3, MODS_SHIFT);
             break;
         case NEO2_3:
             // ℓ
-            SEND_STRING(SS_RALT("1"));
+            register_unicode(0x2113);
             break;
         case NEO2_4:
             // right angled quote
-            SEND_STRING(SS_RALT("z"));
+            tap_with_modifiers(KC_Z, MODS_ALT);
             break;
         case NEO2_5:
             // left angled quote
-            SEND_STRING(SS_RALT("x"));
+            tap_with_modifiers(KC_X, MODS_ALT);
             break;
         case NEO2_6:
             // dollar sign
-            SEND_STRING(SS_LSFT("4"));
+            tap_with_modifiers(KC_4, MODS_SHIFT);
             break;
         case NEO2_7:
             // euro sign
-            SEND_STRING(SS_RALT("e"));
+            tap_with_modifiers(KC_E, MODS_ALT);
             break;
         case NEO2_8:
             // low9 double quote
-            SEND_STRING(SS_RALT("v"));
+            tap_with_modifiers(KC_V, MODS_ALT);
             break;
         case NEO2_9:
             // left double quote
-            SEND_STRING(SS_RALT("b"));
+            tap_with_modifiers(KC_B, MODS_ALT);
             break;
         case NEO2_0:
             // right double quote
-            SEND_STRING(SS_RALT("n"));
+            tap_with_modifiers(KC_N, MODS_ALT);
             break;
         case NEO2_MINUS:
             // em dash
-            SEND_STRING(SS_LSFT(SS_RALT("/")));
+            tap_with_modifiers(KC_SLSH, MODS_SHIFT | MODS_ALT);
             break;
         case NEO2_COMMA:
             // en dash
-            SEND_STRING(SS_RALT("/"));
+            tap_with_modifiers(KC_SLSH, MODS_ALT);
             break;
         case NEO2_DOT:
             // bullet
-            SEND_STRING(SS_RALT(","));
+            tap_with_modifiers(KC_COMM, MODS_ALT);
             break;
         case NEO2_SHARP_S:
             // ẞ
-            SEND_STRING(SS_LSFT(SS_RALT("s")));
+            tap_with_modifiers(KC_S, MODS_SHIFT | MODS_ALT);
             break;
         default:
             set_mods(active_modifiers);
@@ -367,54 +379,54 @@ bool process_record_user_shifted(uint16_t keycode, keyrecord_t *record) {
     } else {
         switch(keycode) {
         case NEO2_1:
-            // SEND_STRING(SS_TAP(X_1));
-            SEND_STRING(SS_TAP(X_F1));
+            tap_with_modifiers(KC_F1, MODS_NONE);
             break;
         case NEO2_2:
-            SEND_STRING(SS_TAP(X_F2));
+            tap_with_modifiers(KC_F2, MODS_NONE);
             break;
         case NEO2_3:
-            SEND_STRING(SS_TAP(X_F3));
+            tap_with_modifiers(KC_F3, MODS_NONE);
             break;
         case NEO2_4:
-            SEND_STRING(SS_TAP(X_F4));
+            tap_with_modifiers(KC_F4, MODS_NONE);
             break;
         case NEO2_5:
-            SEND_STRING(SS_TAP(X_F5));
+            tap_with_modifiers(KC_F5, MODS_NONE);
             break;
         case NEO2_6:
-            SEND_STRING(SS_TAP(X_F6));
+            tap_with_modifiers(KC_F6, MODS_NONE);
             break;
         case NEO2_7:
-            SEND_STRING(SS_TAP(X_F7));
+            tap_with_modifiers(KC_F7, MODS_NONE);
             break;
         case NEO2_8:
-            SEND_STRING(SS_TAP(X_F8));
+            tap_with_modifiers(KC_F8, MODS_NONE);
             break;
         case NEO2_9:
-            SEND_STRING(SS_TAP(X_F9));
+            tap_with_modifiers(KC_F9, MODS_NONE);
             break;
         case NEO2_0:
-            SEND_STRING(SS_TAP(X_F10));
+            tap_with_modifiers(KC_F10, MODS_NONE);
             break;
         case NEO2_MINUS:
-            SEND_STRING(SS_TAP(X_SLASH));
+            tap_with_modifiers(KC_SLSH, MODS_NONE);
             break;
         case NEO2_COMMA:
-            SEND_STRING(SS_TAP(X_COMMA));
+            tap_with_modifiers(KC_COMM, MODS_NONE);
             break;
         case NEO2_DOT:
-            SEND_STRING(SS_TAP(X_DOT));
+            tap_with_modifiers(KC_DOT, MODS_NONE);
             break;
         case NEO2_SHARP_S:
-            // ß
-            SEND_STRING(SS_TAP(X_MINS));
+            tap_with_modifiers(KC_MINS, MODS_NONE);
             break;
         case N3_CIRCUMFLEX:
-            SEND_STRING(SS_TAP(X_GRAVE) SS_TAP(X_SPACE));
+            tap_with_modifiers(KC_GRV, MODS_NONE);
+            tap_with_modifiers(KC_SPC, MODS_NONE);
             break;
         case N3_BACKTICK:
-            SEND_STRING(SS_LSFT("=") SS_TAP(X_SPACE));
+            tap_with_modifiers(KC_EQL, MODS_SHIFT);
+            tap_with_modifiers(KC_SPC, MODS_NONE);
             break;
         default:
             return true;
@@ -422,6 +434,7 @@ bool process_record_user_shifted(uint16_t keycode, keyrecord_t *record) {
 
         return false;
     }
+
 }
 
 // Runs for each key down or up event.
