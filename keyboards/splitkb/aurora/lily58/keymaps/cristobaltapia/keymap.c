@@ -114,7 +114,7 @@ enum unicode_names {
     G_ALPHA,
     S_n,
     S_N,
-    SCRIPT_L,  // Add this
+    SCRIPT_L,
 };
 
 const uint32_t PROGMEM unicode_map[] = {
@@ -168,7 +168,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [_NOTED] = LAYOUT(
   DE_CIRC,    NEO2_1, NEO2_2,  NEO2_3,  NEO2_4,  NEO2_5,                  NEO2_6,  NEO2_7,  NEO2_8,  NEO2_9,  NEO2_0, NEO2_MINUS,
-  DE_J,       DE_Z,     DE_Y,    DE_U,    DE_A,    DE_Q,                    DE_P,    DE_B,    DE_M,    DE_L,    DE_F,      DE_SS,
+  DE_J,       DE_Z,     DE_Y,    DE_U,    DE_A,    DE_Q,                    DE_P,    DE_B,    DE_M,    DE_L,    DE_F,      NEO2_SHARP_S,
   NMOD3,      DE_C,     DE_S,    DE_I,    DE_E,    DE_O,                    DE_D,    DE_T,    DE_N,    DE_R,    DE_H,      NMOD3,
   KC_LSFT,    DE_V,     DE_X, DE_UDIA, DE_ADIA, DE_ODIA, KC_DEL,   KC_BSPC, DE_W,    DE_G, DE_COMM,  DE_DOT,    DE_K,    KC_RSFT,
                            KC_LALT, KC_LGUI, MO(_NEO_4), CTL_SPC,  CTL_ENT, MO(_NEO_4), SWAY_CMB, MO(_FN_KEYS)
@@ -323,7 +323,7 @@ bool process_record_user_shifted(uint16_t keycode, keyrecord_t *record) {
             break;
         case NEO2_3:
             // ℓ
-            register_unicode(0x2113);
+            register_unicode(0x1E9E);
             break;
         case NEO2_4:
             // right angled quote
@@ -379,34 +379,34 @@ bool process_record_user_shifted(uint16_t keycode, keyrecord_t *record) {
     } else {
         switch(keycode) {
         case NEO2_1:
-            tap_with_modifiers(KC_F1, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F1));
             break;
         case NEO2_2:
-            tap_with_modifiers(KC_F2, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F2));
             break;
         case NEO2_3:
-            tap_with_modifiers(KC_F3, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F3));
             break;
         case NEO2_4:
-            tap_with_modifiers(KC_F4, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F4));
             break;
         case NEO2_5:
-            tap_with_modifiers(KC_F5, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F5));
             break;
         case NEO2_6:
-            tap_with_modifiers(KC_F6, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F6));
             break;
         case NEO2_7:
-            tap_with_modifiers(KC_F7, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F7));
             break;
         case NEO2_8:
-            tap_with_modifiers(KC_F8, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F8));
             break;
         case NEO2_9:
-            tap_with_modifiers(KC_F9, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F9));
             break;
         case NEO2_0:
-            tap_with_modifiers(KC_F10, MODS_NONE);
+            SEND_STRING(SS_TAP(X_F10));
             break;
         case NEO2_MINUS:
             tap_with_modifiers(KC_SLSH, MODS_NONE);
