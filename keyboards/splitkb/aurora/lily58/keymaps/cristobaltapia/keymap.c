@@ -323,7 +323,7 @@ bool process_record_user_shifted(uint16_t keycode, keyrecord_t *record) {
             break;
         case NEO2_3:
             // ℓ
-            register_unicode(0x1E9E);
+            register_unicode(0x2113);
             break;
         case NEO2_4:
             // right angled quote
