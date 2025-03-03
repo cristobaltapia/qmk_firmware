@@ -188,7 +188,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                   `----------------------------'           '------''--------------------'
  */
 [_NEO_3] = LAYOUT(
-  _______,     N3_SUP1,    DE_SUP2, DE_SUP3, N3_RSAQUO, N3_LSAQUO,                     N3_CENT,  N3_YEN, N3_SBQUO,  N3_LSQ,  N3_RSQ, _______,
+  _______,     N3_SUP1,    DE_SUP2, DE_SUP3, N3_RSAQUO, N3_LSAQUO,                     N3_CENT,  N3_YEN, N3_SBQUO,  N3_LSQ,  N3_RSQ, N4_EN_DASH,
   _______, N3_ELLIPSIS, N3_UNDRSCR, DE_LBRC,   DE_RBRC,   DE_CIRC,                     DE_EXLM, DE_LABK,  DE_RABK,  DE_EQL, DE_AMPR,   DE_AT,
   _______,   N3_BSLASH,   N3_SLASH, DE_LCBR,   DE_RCBR,   DE_ASTR,                     DE_QUES, DE_LPRN,  DE_RPRN, DE_MINS, DE_COLN, _______,
   _______,     DE_HASH,     DE_DLR, DE_PIPE,   DE_TILD,    DE_GRV,  KC_INS,   UP(S_n, S_N), DE_PLUS, DE_PERC,  DE_DQUO, DE_QUOT, DE_SCLN, _______,
