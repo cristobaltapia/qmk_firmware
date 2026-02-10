@@ -3,6 +3,7 @@
 // #include "keymap_neo2.h"
 #include "keymap_german.h"
 #include "action_layer.h"
+#include "gpio.h"
 
 /* THIS FILE WAS GENERATED!
  *
@@ -133,7 +134,7 @@ static uint8_t capslock_state = 0;
 #define KC_MLSFT LM(_NOTED_SHIFT, KC_LSFT)
 #define KC_MRSFT LM(_NOTED_SHIFT, KC_RSFT)
 #define CTL_SPC LCTL_T(KC_SPC)
-#define CTL_ENT LCTL_T(KC_ENT)
+#define CTL_ENT RCTL_T(KC_ENT)
 #define SWAY_CMB LGUI(KC_LSFT)
 
 // Define layers
@@ -528,6 +529,12 @@ bool caps_word_press_user(uint16_t keycode) {
     }
 }
 
+
+void keyboard_pre_init_user(void) {
+    gpio_set_pin_output(24);
+    gpio_write_pin_high(24);
+}
+
 void keyboard_post_init_user(void) {  
     // Initialize RGB to static black  
     rgblight_enable_noeeprom();  
@@ -535,6 +542,56 @@ void keyboard_post_init_user(void) {
     rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);  
 }
 
-void housekeeping_task_user(void) {  
-    rgblight_setrgb_at(255, 0, 0, 0);  
+void housekeeping_task_user(void) {
+    // Check if CTRL modifier is active
+    uint8_t mods = get_mods();
+    
+    // If CTRL is active, show special color and return early
+    if (mods & MOD_BIT(KC_LCTL)) {
+        rgblight_sethsv_at(HSV_WHITE, 0);  // Left LED only
+        return;
+    }
+    if (mods & MOD_BIT(KC_RCTL)) {
+        rgblight_sethsv_at(HSV_WHITE, 1);  // Right LED only
+        return;
+    }
+    if (mods & MOD_BIT(KC_LEFT_SHIFT)) {
+        rgblight_sethsv_at(HSV_PURPLE, 0);  // Left LED only
+        return;
+    }
+    if (mods & MOD_BIT(KC_RIGHT_SHIFT)) {
+        rgblight_sethsv_at(HSV_PURPLE, 1);  // Right LED only
+        return;
+    }
+    
+    // Check if CAPS_WORD is active
+    if (is_caps_word_on()) {
+        // CAPS_WORD active - show yellow on both LEDs
+        rgblight_sethsv_range(HSV_YELLOW, 0, 2);
+        return;
+    }
+    
+    // Otherwise, show layer-based colors
+    switch (get_highest_layer(layer_state | default_layer_state)) {  
+        case _NOTED:  
+            // Default layer - Black (off)
+            rgblight_sethsv_range(HSV_BLACK, 0, 2);  
+            break;  
+        case _NEO_3:  
+            // NEO 3 layer - Red
+            rgblight_sethsv_range(HSV_RED, 0, 2);  
+            break;  
+        case _NEO_4:  
+            // NEO 4 layer - Orange
+            rgblight_sethsv_range(HSV_ORANGE, 0, 2);  
+            break;  
+        case _FN_KEYS:  
+            // Function keys layer - Azure
+            rgblight_sethsv_range(HSV_AZURE, 0, 2);  
+            break;  
+        case _QWRTY:
+            // QWERTY layer - Green
+            rgblight_sethsv_range(HSV_GREEN, 0, 2);  
+            break;  
+    }  
 }

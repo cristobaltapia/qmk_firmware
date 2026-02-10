@@ -9,11 +9,13 @@ AUDIO_ENABLE = no           # Audio output
 SWAP_HANDS_ENABLE = no      # Enable one-hand typing
 OLED_ENABLE= no		        # OLED display
 
+RGBLIGHT_ENABLE = yes
+RGB_MATRIX_ENABLE = no
+WS2812_DRIVER = vendor
+LTO_ENABLE = no
+
 UNICODE_COMMON = yes
 # UNICODE_ENABLE = yes
 TRI_LAYER_ENABLE = yes
 UNICODEMAP_ENABLE = yes
 CAPS_WORD_ENABLE = yes
-
-RGBLIGHT_ENABLE = yes       # Enables QMK's RGB code  
-WS2812_DRIVER = vendor      # Use the RP2040's PIO interface
