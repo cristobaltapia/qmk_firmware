@@ -546,13 +546,32 @@ void housekeeping_task_user(void) {
     // Check if CTRL modifier is active
     uint8_t mods = get_mods();
     
-    // If CTRL is active, show special color and return early
+    // Check for CTRL+SHIFT combination first (higher priority)
+    bool ctrl_shift_combo = (mods & MOD_BIT(KC_LCTL) && mods & MODS_SHIFT) || 
+                            (mods & MOD_BIT(KC_RCTL) && mods & MODS_SHIFT);
+    
+    if (ctrl_shift_combo) {
+        // CTRL+SHIFT combo - light up pin 24 LED (active low)
+        gpio_write_pin_low(24);
+        // Also show white on both RGB LEDs
+        rgblight_sethsv_range(HSV_WHITE, 0, 2);
+        return;
+    } else {
+        // No CTRL+SHIFT combo - turn off pin 24 LED (active low, so write high)
+        gpio_write_pin_high(24);
+    }
+    
+    // If CTRL is active (but not CTRL+SHIFT), show special color and return early
     if (mods & MOD_BIT(KC_LCTL)) {
         rgblight_sethsv_at(HSV_WHITE, 0);  // Left LED only
         return;
     }
     if (mods & MOD_BIT(KC_RCTL)) {
         rgblight_sethsv_at(HSV_WHITE, 1);  // Right LED only
+        return;
+    }
+    if (mods & MOD_BIT(KC_LALT)) {
+        rgblight_sethsv_at(HSV_TEAL, 0);  // Left LED only
         return;
     }
     if (mods & MOD_BIT(KC_LEFT_SHIFT)) {
